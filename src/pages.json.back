@@ -1,0 +1,34 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "user/views",
+			"pages": [
+				{
+					"path": "index",
+					"style": {
+						"navigationBarTitleText": "用户"
+					}
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"easycom": {
+		"custom": {
+			"^u-(.*)": "vk-uview-ui/components/u-$1/u-$1.vue"
+		}
+	}
+}
