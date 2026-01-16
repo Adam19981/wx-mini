@@ -8,24 +8,34 @@
 			}
 		},
 		{
-			"path": "pages/index/mine",
+			"path": "pages/index/login",
 			"style": {
-				"navigationBarTitleText": "我的",
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/detail/index",
+			"style": {
+				"navigationBarTitleText": "产品详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/favour",
+			"style": {
+				"navigationBarTitleText": "我的收藏",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/aboutUs",
+			"style": {
+				"navigationBarTitleText": "关于我们",
 				"navigationStyle": "custom"
 			}
 		}
 	],
-	"tabBar": {
-		"custom": true,  // 启用自定义 Tabbar
-		"list": [
-			{
-				"pagePath": "pages/index/index"
-			},
-			{
-				"pagePath": "pages/index/mine"
-			}
-		]
-	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
