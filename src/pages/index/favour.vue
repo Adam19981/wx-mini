@@ -24,6 +24,7 @@ async function loadData() {
     is_hot: 0,
     is_presale: 0,
     by_favour: true,
+    has_file: true,
     page_num: searchParams.page_num,
     page_size: searchParams.page_size
   })
@@ -53,6 +54,10 @@ function scrolltolower() {
 }
 
 onMounted(() => {
+  uni.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline']
+  })
   loadData()
 })
 </script>
@@ -71,7 +76,7 @@ onMounted(() => {
       @refresherrefresh="refresh"
       @scrolltolower="scrolltolower"
     >
-      <div class="card-list">
+      <div class="card-list" v-if="productList?.length">
         <ShoeCard
           v-for="item in productList"
           :key="item.shoe_id"
@@ -79,18 +84,15 @@ onMounted(() => {
           @change="handleCardClick"
         ></ShoeCard>
       </div>
+
+      <u-empty v-if="!productList?.length" mode="data"></u-empty>
     </scroll-view>
   </PageLayout>
 </template>
 
 <style scoped lang="scss">
-.content-section {
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-
 .card-list {
+  padding: 16px;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 两列布局 */
   gap: 15px;

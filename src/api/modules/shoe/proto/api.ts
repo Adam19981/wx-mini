@@ -7,6 +7,7 @@ export interface SearchShoesPageReq {
   by_favour: boolean
   page_num: number
   page_size: number
+  has_file: boolean
 }
 
 export interface FileResp {
@@ -51,4 +52,16 @@ export interface ShoeByIdResp {
 export interface ChangeShoeFavourReq {
   shoe_ids: string[]
   is_favour: boolean
+}
+
+export interface SearchSelectListReq {
+  select_type: number
+}
+
+export interface SelectList {
+  items: string[]
+}
+
+export interface SearchSelectListResp {
+  map: Record<string, SelectList>
 }

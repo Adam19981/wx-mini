@@ -4,7 +4,9 @@ import {
   SearchShoesPageResp,
   ShoeByIdReq,
   ShoeByIdResp,
-  ChangeShoeFavourReq
+  ChangeShoeFavourReq,
+  SearchSelectListResp,
+  SearchSelectListReq
 } from './proto/api'
 
 export function searchShoesPage(
@@ -33,6 +35,17 @@ export function changeShoeFavour(
   return request({
     url: '/libong/manager/api/shoe/favour',
     method: 'POST',
+    data: req,
+    headers: {}
+  })
+}
+
+export function searchSelectList(
+  req: SearchSelectListReq
+): Promise<SearchSelectListResp> {
+  return request({
+    url: '/libong/manager/api/shoe/selectList/search',
+    method: 'GET',
     data: req,
     headers: {}
   })

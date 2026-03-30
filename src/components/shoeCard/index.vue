@@ -18,10 +18,10 @@ function getImgByFirst(imgList?: FileResp[]) {
 <template>
   <view class="card-item" @click="emits('change', item)">
     <view class="image-wrapper">
-      <cover-image
-        :src="getImgByFirst(item?.pictures)"
-        mode="aspectFill"
+      <image
         class="product-img"
+        :src="getImgByFirst(item?.pictures)"
+        mode="aspectFit"
       />
 
       <u-icon
@@ -78,6 +78,8 @@ $accent-color: #5d5fef;
   background: #f0f0f0;
 
   .product-img {
+    position: absolute; // 必须使用定位
+    z-index: 2;
     width: 100%;
     height: 100%;
     border-radius: 16px 16px 0 0;
@@ -86,6 +88,7 @@ $accent-color: #5d5fef;
   /* 码数标签悬浮在图片上 */
   .tag-badge {
     position: absolute;
+    z-index: 10;
     top: 10px;
     right: 10px;
     background: rgba(255, 255, 255, 0.9);
@@ -101,6 +104,7 @@ $accent-color: #5d5fef;
     position: absolute;
     top: 10px;
     left: 10px;
+    z-index: 2;
   }
 }
 .info-wrapper {

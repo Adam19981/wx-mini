@@ -15,8 +15,8 @@ interface MenuItem {
 const appVersion = ref('')
 
 const menuList = ref<MenuItem[]>([
-  { title: '检查更新', key: 'update', desc: '已是最新版' },
-  { title: '联系我们', key: 'contact', desc: '' }
+  { title: '检查更新', key: 'update', desc: '已是最新版' }
+  // { title: '联系我们', key: 'contact', desc: '' }
 ])
 
 // --- 事件处理 ---
@@ -41,7 +41,10 @@ const handleMenuClick = (item: MenuItem) => {
 
 onMounted(() => {
   const accountInfo = uni.getAccountInfoSync()
-
+  uni.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline']
+  })
   // 获取版本号
   appVersion.value = accountInfo.miniProgram.version
 })

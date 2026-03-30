@@ -8,19 +8,19 @@ export function getUrlByEnv() {
     case 'develop':
       return {
         action: 'https://www.libong.online/inner/libong/x/api/upload',
-        baseUrl: 'https://www.libong.online/inner',
+        baseUrl: 'https://www.libong.online',
         socketUrl: 'wss://websocket.com/websocket'
       }
     case 'trial':
       return {
         action: 'https://www.libong.online/inner/libong/x/api/upload',
-        baseUrl: 'https://www.libong.online/inner',
+        baseUrl: 'https://www.libong.online',
         socketUrl: 'wss://websocket.com/websocket'
       }
     case 'release':
       return {
         action: 'https://www.libong.online/inner/libong/x/api/upload',
-        baseUrl: 'https://www.libong.online/inner',
+        baseUrl: 'https://www.libong.online',
         socketUrl: 'wss://websocket.com/websocket'
       }
   }

@@ -1,7 +1,7 @@
 import * as SDate from './date'
 import { manager as requestManager } from '@/request/manager'
 
-async function hasAuthorization() {
+export async function hasAuthorization() {
   const token = await requestManager.token()
 
   if (!token) {

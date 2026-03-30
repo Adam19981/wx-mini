@@ -17,21 +17,15 @@
         :autoplay="false"
         @change="handleSwiperChange"
       >
-        <swiper-item>
-          <view
-            class="video-wrapper"
-            v-for="video in product?.videos"
-            :key="video.id"
-          >
+        <swiper-item v-for="video in product?.videos" :key="video.id">
+          <view class="video-wrapper">
             <video
               id="productVideo"
               class="media-item"
               :src="video.url"
               :autoplay="true"
-              :loop="true"
-              :muted="true"
               :controls="false"
-              object-fit="cover"
+              object-fit="fill"
             ></video>
             <view class="video-tag">
               <text class="dot"></text> LIVE PREVIEW
@@ -40,7 +34,7 @@
         </swiper-item>
 
         <swiper-item v-for="img in product?.pictures" :key="img.id">
-          <image class="media-item" :src="img" mode="aspectFill" />
+          <image class="media-item" :src="img.url" mode="aspectFit" />
         </swiper-item>
       </swiper>
 
@@ -61,13 +55,13 @@
           <text class="product-shape">{{ product?.shape_code || '' }}</text>
           <view
             class="rating-badge"
-            v-if="product?.is_presale"
+            v-if="product?.is_presale === 1"
             style="background: #2979ff"
             >预售</view
           >
           <view
             class="rating-badge"
-            v-if="product?.is_hot"
+            v-if="product?.is_hot === 1"
             style="background: #fa3534"
             >热门</view
           >
@@ -128,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, getCurrentInstance } from 'vue'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import { ShoeByIdResp } from '@/api/modules/shoe/proto/api'
 import { changeShoeFavour, shoeById } from '@/api/modules/shoe/shoeInterface'
@@ -141,6 +135,8 @@ const shoe_id = ref('')
 const product = ref<ShoeByIdResp>()
 
 const currentIndex = ref(0)
+
+const instance = getCurrentInstance()
 
 // 计算总数 (视频1个 + 图片数量)
 const totalCount = computed(() => {
@@ -166,8 +162,7 @@ async function loadData() {
     shoe_id: shoe_id.value
   })
 
-  console.log(resp)
-
+  console.log('detail', resp)
   product.value = resp
 
   isCollected.value = resp.is_favour
@@ -189,12 +184,27 @@ const toggleCollection = async () => {
   isAnimating.value = false
 
   if (isCollected.value) {
-    uni.showToast({ title: '已加入心愿单', icon: 'none' })
+    uni.showToast({ title: '已加入收藏', icon: 'none' })
   }
+
+  uni.$emit('refresh', { id: shoe_id.value, flag: product.value!.is_favour })
 }
 
 const handleSwiperChange = (e: any) => {
   currentIndex.value = e.detail.current
+
+  if (product.value?.videos?.length) {
+    const find = product.value?.videos[currentIndex.value]
+
+    const videoContext = uni.createVideoContext('productVideo', instance)
+
+    if (!find) {
+      videoContext.pause()
+    } else {
+      videoContext.play()
+    }
+  }
+
   // 如果需要，可以在这里处理视频暂停/播放逻辑
   // 例如滑到图片页时暂停视频
 }
@@ -202,6 +212,11 @@ const handleSwiperChange = (e: any) => {
 onReady(() => {
   const { safeAreaInsets } = uni.getWindowInfo()
   paddingTop.value = safeAreaInsets.top || 25
+
+  uni.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline']
+  })
 })
 
 onLoad((query) => {
@@ -257,12 +272,12 @@ $white: #ffffff;
 .swiper-container {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 340px;
 }
 
 .media-swiper {
   width: 100%;
-  height: 500px; /* 占据屏幕约 60% 高度 */
+  height: 340px; /* 占据屏幕约 60% 高度 */
   background: #000;
 
   .media-item {
@@ -363,7 +378,7 @@ $white: #ffffff;
 /* 3. 详情卡片 */
 .content-card {
   position: relative;
-  margin-top: -40px; /* 负边距实现上浮覆盖效果 */
+  margin-top: -10px; /* 负边距实现上浮覆盖效果 */
   background: $white;
   border-radius: 32px 32px 0 0;
   padding: 10px 25px 40px;
@@ -479,10 +494,9 @@ $white: #ffffff;
   }
 
   .size-item {
-    width: 60px;
     height: 60px;
     flex-shrink: 0;
-    border-radius: 50%; /* 圆形 */
+    border-radius: 30px; /* 圆形 */
     background: #fff;
     border: 1px solid #eee;
     display: flex;
@@ -490,6 +504,7 @@ $white: #ffffff;
     justify-content: center;
     margin-right: 12px;
     transition: all 0.2s;
+    padding: 0 20px;
 
     .size-num {
       font-size: 16px;

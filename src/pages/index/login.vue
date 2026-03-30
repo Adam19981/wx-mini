@@ -88,7 +88,7 @@ const handleLogin = () => {
 
       isLoading.value = false
 
-      uni.navigateTo({
+      uni.reLaunch({
         url: '/pages/index/index'
       })
     }

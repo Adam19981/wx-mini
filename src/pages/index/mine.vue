@@ -4,6 +4,7 @@ import { onReady } from '@dcloudio/uni-app'
 import collectIcon from '@/static/mine/collect.png'
 import aboutIcon from '@/static/mine/about.png'
 import logoutIcon from '@/static/mine/logout.png'
+import { hasAuthorization } from '@/utils'
 
 import { manager as requestManager } from '@/request/manager'
 
@@ -24,13 +25,15 @@ function handleLogout() {
   })
 }
 
-function handleCheckFavour() {
+async function handleCheckFavour() {
+  await hasAuthorization()
   uni.navigateTo({
     url: '/pages/index/favour'
   })
 }
 
-function handleCheckAboutUs() {
+async function handleCheckAboutUs() {
+  await hasAuthorization()
   uni.navigateTo({
     url: '/pages/index/aboutUs'
   })
