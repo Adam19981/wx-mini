@@ -152,6 +152,21 @@
   <TabBar v-model="tabActive" />
 
   <u-select v-model="show" :list="list" @confirm="handleConfirm"></u-select>
+
+  <!-- 宣传图片弹窗 -->
+  <view class="promo-modal" v-if="showPromoModal" @click="closePromoModal">
+    <view class="promo-modal-content" @click.stop>
+      <view class="promo-close" @click="closePromoModal">
+        <u-icon name="close" size="24"></u-icon>
+      </view>
+      <image class="promo-image" src="/static/promo-banner.jpeg" mode="aspectFit"  />
+    </view>
+  </view>
+
+  <!-- 右侧悬浮按钮 -->
+  <view class="promo-float-btn" v-if="!showPromoModal && showFloatBtn" @click="openPromoModal">
+    <image class="promo-float-icon" src="/static/promo-banner.jpeg" mode="aspectFill" />
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -183,6 +198,26 @@ const selectMap = ref<Record<string, SelectList>>()
 const showFilter = ref(false)
 
 const focusActive = ref(false)
+
+const showPromoModal = ref(false)
+
+const showFloatBtn = ref(true)
+
+function closePromoModal() {
+  showPromoModal.value = false
+  showFloatBtn.value = true
+}
+
+function openPromoModal() {
+  showPromoModal.value = true
+  showFloatBtn.value = false
+}
+
+function handlePromoClick() {
+  uni.makePhoneCall({
+    phoneNumber: '13666836968'
+  })
+}
 
 const options = [
   { label: '全部', value: 0 },
@@ -262,10 +297,11 @@ function handleOpenSelect(mode: string) {
 function handleConfirm(ev: any) {
   const [item] = ev
 
-  searchParams[selectMode.value] = item.value
-
   if (selectMode.value === 'material') {
+    searchParams.material = item.value
     searchParams.shape_code = ''
+  } else if (selectMode.value === 'shape_code') {
+    searchParams.shape_code = item.value
   }
 }
 function resetFilter() {
@@ -340,6 +376,13 @@ const handleCardClick = (item: Shoe) => {
   uni.navigateTo({ url: `/pages/detail/index?id=${item.shoe_id}` })
 }
 
+const handleBannerClick = () => {
+  // 点击宣传图片，可以跳转到联系方式页面或拨打电话
+  uni.makePhoneCall({
+    phoneNumber: '13666836968'
+  })
+}
+
 function favourDataCallBack(ev: { id: string; flag: boolean }) {
   const find = productList.value.find((v) => v.shoe_id === ev.id)
 
@@ -366,6 +409,11 @@ onReady(async () => {
   }
 
   uni.$on('refresh', favourDataCallBack)
+
+  // 页面加载时自动显示宣传弹窗
+  // setTimeout(() => {
+  //   showPromoModal.value = true
+  // }, 800)
 })
 
 onBeforeUnmount(() => {
@@ -422,7 +470,29 @@ $text-sub: #8c8c8c;
 }
 
 .search-wrapper {
-  padding: 16px 16px 0; /* 根据你原来的布局调整 */
+  padding: 12px 16px 0; /* 根据你原来的布局调整 */
+}
+
+/* 宣传图片轮播区域 */
+.banner-section {
+  padding: 12px 16px 0;
+
+  .banner-swiper {
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+
+    .banner-item {
+      width: 100%;
+      height: 100%;
+
+      .banner-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+      }
+    }
+  }
 }
 
 /* 搜索框样式 - 拟态/悬浮感 */
@@ -569,5 +639,104 @@ $text-sub: #8c8c8c;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+}
+
+/* 宣传图片弹窗 */
+.promo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+
+  .promo-modal-content {
+    position: relative;
+    width: 100%;
+    height: max-content;
+    background-color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    animation: modalShow 0.3s ease-out;
+
+    .promo-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .promo-image {
+      width: 100%;
+      display: block;
+    }
+  }
+}
+
+@keyframes modalShow {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 右侧悬浮按钮 */
+.promo-float-btn {
+  position: fixed;
+  right: 0;
+  top: 70%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 70px;
+  background-color: #fff;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  animation: floatBtnShow 0.3s ease-out;
+
+  .promo-float-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+
+  .promo-float-text {
+    font-size: 11px;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+@keyframes floatBtnShow {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 </style>
