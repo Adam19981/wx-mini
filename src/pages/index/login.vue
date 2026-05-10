@@ -19,29 +19,45 @@
         </view>
       </view>
 
+      <view class="form-section">
+        <view class="input-group">
+          <text class="input-label">账号</text>
+          <input
+            class="custom-input"
+            v-model="loginForm.account"
+            placeholder="请输入账号"
+            placeholder-class="placeholder-style"
+          />
+        </view>
+        <view class="input-group">
+          <text class="input-label">密码</text>
+          <input
+            class="custom-input"
+            v-model="loginForm.password"
+            password
+            placeholder="请输入密码"
+            placeholder-class="placeholder-style"
+          />
+        </view>
+      </view>
+
       <view class="action-area">
         <button
           class="login-btn-black"
           hover-class="btn-pressed"
           @click="handleLogin"
           :loading="isLoading"
+          :disabled="!loginForm.account || !loginForm.password"
         >
-          用户登录
-          <!--          <text class="btn-text"></text>-->
+          登录
         </button>
-
-        <!--        <view class="footer-links">-->
-        <!--          <text>Privacy Policy</text>-->
-        <!--          <text class="dot">•</text>-->
-        <!--          <text>Terms</text>-->
-        <!--        </view>-->
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import {
   loginIn,
   userInfo,
@@ -52,47 +68,59 @@ import { manager as requestManager } from '@/request/manager'
 
 const isLoading = ref(false)
 
-const handleLogin = () => {
+const loginForm = reactive({
+  account: '',
+  password: ''
+})
+
+const handleLogin = async () => {
+  if (!loginForm.account || !loginForm.password) {
+    uni.showToast({
+      title: '请输入账号和密码',
+      icon: 'none'
+    })
+    return
+  }
+
   uni.vibrateShort({ success: () => {} })
   isLoading.value = true
 
-  uni.login({
-    provider: 'weixin',
-    async success(res) {
-      const resp = await loginIn({
-        login_in_type: 4,
-        account: '',
-        phone: '',
-        password: '',
-        verify_code: '',
-        email: '',
-        code: res.code
-      })
+  try {
+    const resp = await loginIn({
+      login_in_type: 2, // 2: 账户密码
+      account: loginForm.account,
+      phone: '',
+      password: loginForm.password,
+      verify_code: '',
+      email: '',
+      code: ''
+    })
 
-      await requestManager.setToken(resp.access_token)
+    await requestManager.setToken(resp.access_token)
 
-      const respRole = await userRoles()
+    const respRole = await userRoles()
 
-      console.log('role', respRole)
+    console.log('role', respRole)
 
-      if (respRole.roles?.length) {
-        await requestManager.setRole(respRole.roles[0].id)
-      }
-      const respUser = await userInfo()
-
-      console.log('user', respUser)
-
-      if (respUser?.account) {
-        await requestManager.setHeader('user', JSON.stringify(respUser))
-      }
-
-      isLoading.value = false
-
-      uni.reLaunch({
-        url: '/pages/index/index'
-      })
+    if (respRole.roles?.length) {
+      await requestManager.setRole(respRole.roles[0].id)
     }
-  })
+    const respUser = await userInfo()
+
+    console.log('user', respUser)
+
+    if (respUser?.account) {
+      await requestManager.setHeader('user', JSON.stringify(respUser))
+    }
+
+    uni.reLaunch({
+      url: '/pages/index/index'
+    })
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -191,6 +219,8 @@ $btn-color: #000000;
 }
 
 .brand-section {
+  margin-bottom: 40px;
+
   .logo-circle {
     width: 60px;
     height: 60px;
@@ -230,6 +260,44 @@ $btn-color: #000000;
       font-size: 18px;
       color: $text-light;
       font-weight: 400;
+    }
+  }
+}
+
+.form-section {
+  margin-bottom: 40px;
+
+  .input-group {
+    margin-bottom: 25px;
+
+    .input-label {
+      display: block;
+      font-size: 14px;
+      color: $text-light;
+      margin-bottom: 10px;
+      font-weight: 500;
+      margin-left: 5px;
+    }
+
+    .custom-input {
+      width: 100%;
+      height: 56px;
+      background: #f5f5f7;
+      border-radius: 16px;
+      padding: 0 20px;
+      box-sizing: border-box;
+      font-size: 16px;
+      color: $text-main;
+      transition: all 0.3s ease;
+
+      &:focus {
+        background: #efeff1;
+      }
+    }
+
+    .placeholder-style {
+      color: #b0b0b5;
+      font-size: 15px;
     }
   }
 }

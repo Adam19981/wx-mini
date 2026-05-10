@@ -159,13 +159,25 @@
       <view class="promo-close" @click="closePromoModal">
         <u-icon name="close" size="24"></u-icon>
       </view>
-      <image class="promo-image" src="/static/promo-banner.jpeg" mode="aspectFit"  />
+      <image
+        class="promo-image"
+        src="/static/promo-banner.jpeg"
+        mode="widthFix"
+      />
     </view>
   </view>
 
   <!-- 右侧悬浮按钮 -->
-  <view class="promo-float-btn" v-if="!showPromoModal && showFloatBtn" @click="openPromoModal">
-    <image class="promo-float-icon" src="/static/promo-banner.jpeg" mode="aspectFill" />
+  <view
+    class="promo-float-btn"
+    v-if="!showPromoModal && showFloatBtn"
+    @click="openPromoModal"
+  >
+    <image
+      class="promo-float-icon"
+      src="/static/promo-banner.jpeg"
+      mode="aspectFill"
+    />
   </view>
 </template>
 
@@ -666,8 +678,8 @@ $text-sub: #8c8c8c;
 
     .promo-close {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 10px;
+      right: 10px;
       width: 32px;
       height: 32px;
       background-color: rgba(255, 255, 255, 0.3);
@@ -680,6 +692,7 @@ $text-sub: #8c8c8c;
 
     .promo-image {
       width: 100%;
+      height: 260px;
       display: block;
     }
   }
