@@ -17,6 +17,14 @@
 			}
 		},
 		{
+			"path": "pages/index/intro",
+			"style": {
+				"navigationBarTitleText": "公司介绍",
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		},
+		{
 			"path": "pages/detail/index",
 			"style": {
 				"navigationBarTitleText": "产品详情",

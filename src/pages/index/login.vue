@@ -11,35 +11,35 @@
       <view class="brand-section">
         <view class="logo-circle">
           <!--          <image class="logo-circle-image" :src="logo"></image>-->
-          <text class="logo-text">WX.</text>
+          <text class="logo-text">BR</text>
         </view>
         <view class="title-group">
-          <text class="main-title">您好,</text>
+          <text class="main-title">您好</text>
           <text class="sub-title">欢迎使用博瑞五星鞋材</text>
         </view>
       </view>
 
-      <view class="form-section">
-        <view class="input-group">
-          <text class="input-label">账号</text>
-          <input
-            class="custom-input"
-            v-model="loginForm.account"
-            placeholder="请输入账号"
-            placeholder-class="placeholder-style"
-          />
-        </view>
-        <view class="input-group">
-          <text class="input-label">密码</text>
-          <input
-            class="custom-input"
-            v-model="loginForm.password"
-            password
-            placeholder="请输入密码"
-            placeholder-class="placeholder-style"
-          />
-        </view>
-      </view>
+      <!--      <view class="form-section">-->
+      <!--        <view class="input-group">-->
+      <!--          <text class="input-label">账号</text>-->
+      <!--          <input-->
+      <!--            class="custom-input"-->
+      <!--            v-model="loginForm.account"-->
+      <!--            placeholder="请输入账号"-->
+      <!--            placeholder-class="placeholder-style"-->
+      <!--          />-->
+      <!--        </view>-->
+      <!--        <view class="input-group">-->
+      <!--          <text class="input-label">密码</text>-->
+      <!--          <input-->
+      <!--            class="custom-input"-->
+      <!--            v-model="loginForm.password"-->
+      <!--            password-->
+      <!--            placeholder="请输入密码"-->
+      <!--            placeholder-class="placeholder-style"-->
+      <!--          />-->
+      <!--        </view>-->
+      <!--      </view>-->
 
       <view class="action-area">
         <button
@@ -47,9 +47,8 @@
           hover-class="btn-pressed"
           @click="handleLogin"
           :loading="isLoading"
-          :disabled="!loginForm.account || !loginForm.password"
         >
-          登录
+          用户登录
         </button>
       </view>
     </view>
@@ -73,54 +72,47 @@ const loginForm = reactive({
   password: ''
 })
 
-const handleLogin = async () => {
-  if (!loginForm.account || !loginForm.password) {
-    uni.showToast({
-      title: '请输入账号和密码',
-      icon: 'none'
-    })
-    return
-  }
-
+const handleLogin = () => {
   uni.vibrateShort({ success: () => {} })
   isLoading.value = true
 
-  try {
-    const resp = await loginIn({
-      login_in_type: 2, // 2: 账户密码
-      account: loginForm.account,
-      phone: '',
-      password: loginForm.password,
-      verify_code: '',
-      email: '',
-      code: ''
-    })
+  uni.login({
+    provider: 'weixin',
+    async success(res) {
+      const resp = await loginIn({
+        login_in_type: 4,
+        account: '',
+        phone: '',
+        password: '',
+        verify_code: '',
+        email: '',
+        code: res.code
+      })
 
-    await requestManager.setToken(resp.access_token)
+      await requestManager.setToken(resp.access_token)
 
-    const respRole = await userRoles()
+      const respRole = await userRoles()
 
-    console.log('role', respRole)
+      console.log('role', respRole)
 
-    if (respRole.roles?.length) {
-      await requestManager.setRole(respRole.roles[0].id)
+      if (respRole.roles?.length) {
+        await requestManager.setRole(respRole.roles[0].id)
+      }
+      const respUser = await userInfo()
+
+      console.log('user', respUser)
+
+      if (respUser?.account) {
+        await requestManager.setHeader('user', JSON.stringify(respUser))
+      }
+
+      isLoading.value = false
+
+      uni.reLaunch({
+        url: '/pages/index/intro'
+      })
     }
-    const respUser = await userInfo()
-
-    console.log('user', respUser)
-
-    if (respUser?.account) {
-      await requestManager.setHeader('user', JSON.stringify(respUser))
-    }
-
-    uni.reLaunch({
-      url: '/pages/index/index'
-    })
-  } catch (e) {
-    console.error(e)
-  } finally {
-    isLoading.value = false
-  }
+  })
 }
 </script>
 
