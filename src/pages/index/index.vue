@@ -36,37 +36,48 @@
               />
             </view>
 
-            <div class="grid-2">
-              <view class="search-box gary-box">
-                <u-icon name="arrow-down-fill" size="28" color="#999"></u-icon>
+            <view class="search-box gary-box">
+              <u-icon name="search" size="28" color="#999"></u-icon>
+              <input
+                class="search-input"
+                type="text"
+                :focus="focusActive"
+                v-model="searchParams.shape_code"
+                @blur="focusActive = false"
+                placeholder="搜索形体..."
+                placeholder-style="color: #999; font-size: 14px;"
+              />
+            </view>
 
-                <input
-                  class="search-input"
-                  type="text"
-                  readonly
-                  disabled
-                  v-model="searchParams.material"
-                  placeholder="选择材质"
-                  @click="handleOpenSelect('material')"
-                  placeholder-style="color: #999; font-size: 14px;"
-                />
-              </view>
+            <view class="search-box gary-box">
+              <u-icon name="arrow-down-fill" size="28" color="#999"></u-icon>
 
-              <view class="search-box gary-box">
-                <u-icon name="arrow-down-fill" size="28" color="#999"></u-icon>
+              <input
+                class="search-input"
+                type="text"
+                readonly
+                disabled
+                v-model="searchParams.material"
+                placeholder="选择材质"
+                @click="handleOpenSelect('material')"
+                placeholder-style="color: #999; font-size: 14px;"
+              />
+            </view>
 
-                <input
-                  class="search-input"
-                  type="text"
-                  readonly
-                  disabled
-                  v-model="searchParams.shape_code"
-                  placeholder="选择形体"
-                  @click="handleOpenSelect('shape_code')"
-                  placeholder-style="color: #999; font-size: 14px;"
-                />
-              </view>
-            </div>
+            <!--              <view class="search-box gary-box">-->
+            <!--                <u-icon name="arrow-down-fill" size="28" color="#999"></u-icon>-->
+
+            <!--                <input-->
+            <!--                  class="search-input"-->
+            <!--                  type="text"-->
+            <!--                  readonly-->
+            <!--                  disabled-->
+            <!--                  v-model="searchParams.shape_code"-->
+            <!--                  placeholder="选择形体"-->
+            <!--                  @click="handleOpenSelect('shape_code')"-->
+            <!--                  placeholder-style="color: #999; font-size: 14px;"-->
+            <!--                />-->
+            <!--              </view>-->
 
             <view class="filter-section">
               <text class="section-title">热门</text>
@@ -267,7 +278,8 @@ const materialList = [
   {
     label: 'TPR',
     value: 'TPR'
-  }
+  },
+  { label: '双色EVA倒料', value: '双色EVA倒料' }
 ]
 
 const triggered = ref(false)
